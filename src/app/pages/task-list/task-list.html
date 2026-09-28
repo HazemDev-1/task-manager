@@ -1,0 +1,72 @@
+<section class="toolbar">
+  <div class="filters" role="group" aria-label="Filter by status">
+    @for (f of filters; track f) {
+      <button
+        type="button"
+        [class.active]="service.statusFilter() === f"
+        [attr.aria-pressed]="service.statusFilter() === f"
+        (click)="service.statusFilter.set(f)"
+      >
+        {{ label(f) }}
+      </button>
+    }
+  </div>
+
+  <input type="search" placeholder="Search tasks…" aria-label="Search tasks" [value]="service.search()" (input)="onSearch($event)" />
+
+  <label class="sort">
+    Sort by
+    <select [value]="service.sortBy()" (change)="onSort($event)">
+      <option value="due">Due date</option>
+      <option value="priority">Priority</option>
+      <option value="newest">Newest</option>
+    </select>
+  </label>
+</section>
+
+@if (service.visibleTasks().length === 0) {
+  <p class="empty">
+    @if (service.tasks().length === 0) {
+      No tasks yet. <a routerLink="/tasks/new">Create your first task</a>.
+    } @else {
+      No tasks match your filters.
+    }
+  </p>
+} @else {
+  <ul class="tasks">
+    @for (task of service.visibleTasks(); track task.id) {
+      <li class="task" [class.done]="task.status === 'done'" [class.overdue]="service.isOverdue(task)" data-testid="task">
+        <button
+          type="button"
+          class="status"
+          [attr.data-status]="task.status"
+          [attr.aria-label]="'Move ' + task.title + ' to next status'"
+          (click)="service.advanceStatus(task.id)"
+        >
+          {{ statusLabel[task.status] }}
+        </button>
+
+        <div class="body">
+          <h3>{{ task.title }}</h3>
+          @if (task.description) {
+            <p>{{ task.description }}</p>
+          }
+          <div class="meta">
+            <span class="priority" [attr.data-priority]="task.priority">{{ task.priority }}</span>
+            @if (task.dueDate) {
+              <span>Due {{ task.dueDate }}</span>
+            }
+            @if (service.isOverdue(task)) {
+              <span class="overdue-tag">Overdue</span>
+            }
+          </div>
+        </div>
+
+        <div class="actions">
+          <a [routerLink]="['/tasks', task.id]">Edit</a>
+          <button type="button" class="link danger" (click)="remove(task.id, task.title)">Delete</button>
+        </div>
+      </li>
+    }
+  </ul>
+}

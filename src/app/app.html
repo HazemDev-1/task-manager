@@ -1,0 +1,14 @@
+<header class="header">
+  <a routerLink="/" class="brand">Task Manager</a>
+  <nav>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      Tasks <span class="badge">{{ stats().total - stats().done }}</span>
+    </a>
+    <a routerLink="/stats" routerLinkActive="active">Stats</a>
+    <a routerLink="/tasks/new" class="primary">+ New task</a>
+  </nav>
+</header>
+
+<main class="container">
+  <router-outlet />
+</main>

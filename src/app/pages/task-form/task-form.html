@@ -1,0 +1,45 @@
+@if (notFound) {
+  <p class="empty">That task doesn't exist. <a routerLink="/">Back to tasks</a></p>
+} @else {
+  <form class="card" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <h2>{{ isEdit ? 'Edit task' : 'New task' }}</h2>
+
+    <label>
+      Title
+      <input formControlName="title" autocomplete="off" />
+    </label>
+    @if (showError('title')) {
+      <p class="error" role="alert">
+        {{ form.controls.title.hasError('required') ? 'Title is required.' : 'Title must be 80 characters or less.' }}
+      </p>
+    }
+
+    <label>
+      Description
+      <textarea formControlName="description" rows="4"></textarea>
+    </label>
+    @if (showError('description')) {
+      <p class="error" role="alert">Description must be 500 characters or less.</p>
+    }
+
+    <div class="row">
+      <label>
+        Priority
+        <select formControlName="priority">
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </label>
+      <label>
+        Due date
+        <input type="date" formControlName="dueDate" />
+      </label>
+    </div>
+
+    <div class="buttons">
+      <a routerLink="/">Cancel</a>
+      <button type="submit">{{ isEdit ? 'Save changes' : 'Add task' }}</button>
+    </div>
+  </form>
+}
